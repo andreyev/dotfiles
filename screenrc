@@ -1,0 +1,186 @@
+# ~/.screenrc
+# vim: ft=sh
+#
+# explicações sobre as configurações e utilização geral do screen
+# estão em http://verde666.org/coluna
+#
+# 20010403 <aurelio@verde666.org>
+
+# dica: zombie
+escape ^pp
+zombie kr
+# faz com que cada janela morta fique esperando uma ação
+# (Kill ou Restore). útil pra ver os erros que aconteceram.
+#
+
+### explanation about color codes:
+#
+# sorendition <attribute> <color>
+# sorendition ab cd  //  a,c=bg  b,d=fg
+#
+#  ab             c&d       c&d
+#  00 normal       0 black   4 blue 
+#  1- invert       1 red     5 magenta
+#  25 bright       2 green   6 cyan
+#  3- 1+2          3 brown   7 silver
+#
+# * attributes are cumulative, so a=3 is invert+bright
+# * colors use the same codes for bg & fg colors,
+#   so cd=22 all you get is green, text unreadable
+# 
+# examples:
+#  00 02 - black bg (0), green fg (2), no attributes (00)
+#  20 30 - brown bg (3), black fg (0), bright bg (2) -> turns yellow
+#  35 74 - silver bg (7), blue fg (4), invert, bright bg (3), bright fg (5)
+
+# barra azul e amarelo, com hora, data e janelas
+msgwait 3
+sorendition 05 42
+#hardstatus alwayslastline " %c | %d/%m/%Y |  %w"
+# hardstatus alwayslastline " %c | %d/%m/%Y |  %w"
+# hardstatus alwayslastline "%{rk}%H%{wk} %c %d-%M  %?%-Lw%?%{gk}%n-%f %t%?(%u)%?%{wk}%+Lw%? " 
+# hardstatus alwayslastline "%{gk} %c | %d/%m/%Y | %?%-Lw%?%{kg}%n-%f %t%?(%u)%?%{gk}%+Lw%? " 
+hardstatus alwayslastline "%{gK} %c | %d/%m/%Y | %w " 
+
+# barra verde e preto, com códigos de cores literais
+# hardstatus alwayslastline "\033[m\033[42;30m%c\033[m \033[42;30m%d%m%Y\033[m \033[42;30m %w \033[m"
+# hardstatus alwayslastline "\033[m\033[42;30m%c\033[m \033[42;30m%d/%m/%Y\033[m \033[42;30m %w \033[m" #change by andreyev
+
+vbell on                                 # bipe visual
+bell "  %n %t calling!"                 # msg bipe
+# verbose on
+autodetach on                            # -
+startup_message off                      # msg mala
+shell -$SHELL                            # nem lembro
+#bufferfile $TMPFILE                     # arq tmp
+nethack on                               # msgs estilo nethack
+defmonitor on                           # monitorar QUALQUER atividade
+bind \034 hardcopy                      # mapeia PrintScreen
+caption splitonly "%2n %t"               # barra de janelas
+
+# programas carregados automaticamente
+bind c screen 1 bash
+#bind M screen -t mp3 9 mp3 /666/punk     # mp3
+
+# cadeias comuns que tem que digitar toda hora, nome, email, etc
+# útil pra preencher formulários online...
+# bind e screen -t mutt_person mutt -F /home/andreyev/.muttrc_personal
+#bindkey -t ec stuff $EMAILC
+#bindkey -t ev stuff $EMAILV
+#bindkey -t uc stuff $URLC
+#bindkey -t uv stuff $URLV
+#bindkey -t ur stuff http://txt2regex.sourceforge.net
+#bindkey -t ut stuff http://txt2tags.sourceforge.net
+#bindkey -t uz stuff http://funcoeszz.codigolivre.org.br
+
+#bind o screen 0 /usr/bin/play $HOME/pessoal/O-Oh.wav
+
+#register c "$EMAILC"
+#register v "$EMAILV"
+#register c "$URLC"
+#register v "$URLV"
+#register z "$URLC/programas/bash/funcoesZZ"
+#register r "http://txt2regex.sourceforge.net"
+#register t "http://txt2tags.sourceforge.net"
+#bind E paste
+
+# to shit+(page up|page down) work
+bind h hardstatus ignore
+bind g hardstatus alwayslastline
+
+# remap w to the selectable list
+bind 'w' windowlist -b
+bind 'W' windows
+
+# mapeamentos para fazer redimensionamento de janelas divididas
+# com o Split.
+bind 'R' wrap
+bind 'r' resize
+bind '+' resize +5
+bind '-' resize -5
+
+
+# enquanto não resolver o problema do hardcopy com hardstatus
+hardcopy_append on
+#bind h
+
+# segurança: desligar algumas tecla perigosas
+#bind k
+#bind ^k
+bind '^\'
+bind z
+bind ^z
+bind x
+
+# e aqui fica o kill
+bind 'K' kill
+
+#colocar \033k\033\134 no começo do PS1
+# permite prompt colorido mas bagunça quando chega na extrema direita
+shelltitle '] |_'
+
+# para colar no vim sem "identar"
+# ATENÇÃO: é ^a^] 
+register [ "\033:set   paste a"
+register ] "\033:set nopaste a"
+bind ^] paste [.]
+
+
+### do /etc/screenrc
+termcap  facit|vt100|xterm LP:G0
+terminfo facit|vt100|xterm LP:G0
+#the vt100 description does not mention "dl". *sigh*
+termcap  vt100 dl=5\E[M
+terminfo vt100 dl=5\E[M
+###
+term xterm
+
+# disprando programas automaticamente ao iniciar o screen
+
+#@# ### DHCP ### ### DHCP ### ### DHCP ### ### DHCP ###
+screen -t root		0 sudo su -
+screen -t bash		1 bash
+screen -t bash 		2 bash
+screen -t bash 		3 bash
+screen -t bash		4 bash
+# screen -t monitor 		4 top -c
+# screen -t mutt 0 mutt -F /home/andreyev/.muttrc_pro
+#screen -t blog-left 5 lynx -accept_all_cookies http://planeta.terra.com.br/informatica/apropos/blog/left.html
+#screen -t freshmeat    3 lynx http://www.freshmeat.net
+#screen -t zznoticias   4 bash -c "funcoeszz zznoticiaslinux; echo; echo ---FIM---; read"
+#screen -t artistas     5 bash -c "funcoeszz zzcasadosartistas; echo; echo ---FIM---; read"
+select 2
+
+# http://ashitaka-san.home.comcast.net/yayrant/screenrc
+#bindkey -k F1 select 0 ## F11 = screen 0... avoid this screen :/
+#bindkey -k k1 select 1 ## F1 = screen 1
+#bindkey -k k2 select 2 ## F2 = screen 2
+#bindkey -k k3 select 3 ## F3 = screen 3
+#bindkey -k k4 select 4 ## F4 = screen 4
+#bindkey -k k5 select 5 ## F5 = screen 5
+#bindkey -k k6 select 6 ## F6 = screen 6
+#bindkey -k k7 select 7 ## F7 = screen 7
+#bindkey -k k8 select 8 ## F8 = screen 8
+#bindkey -k k9 select 9 ## F9 = screen 9
+#bindkey -k k0 select 10 # F10 = screen 10
+#bindkey -k F2 command  ## F12 = do a command
+
+
+
+#MY FILTERS
+
+bind N stuff "Andreyev Dias de Melo"
+bind E stuff "andreyev@andreyev.net"
+bind I stuff "66606830"
+bind H stuff "stty erase ^H" 
+bind T stuff "date +%Y%m%d%H%M%S"
+
+#gen a session registry file(pid file)
+#gen_pid_file ()
+#{
+#pid_file=$HOME/.screen.pid
+#if test -e $pid_file ; then
+#kill
+#else touch $pid_file ; ps -ef | grep andreyev | grep screen | grep -v grep | awk '{print $2}' >> $pid_file
+#fi
+#}
